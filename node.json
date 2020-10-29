@@ -9,7 +9,6 @@
         ".gitignore"
     ],
 	"permissions": {
-		"run-as-root": "Needs to access /dev/ttyUSB0",
 		"serial": "request serial access"
 	},
     "options": [{
