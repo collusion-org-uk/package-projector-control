@@ -12,4 +12,7 @@
         "parents": "any",
         "childs": []
     }
+	"permissions": {
+		"run-as-root": "Needs to access /dev/ttyUSB0"
+	}
 }
