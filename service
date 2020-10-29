@@ -1,0 +1,92 @@
+#!/usr/bin/python2.7
+import time
+import sys
+import pytz
+import serial
+from datetime import datetime
+from hosted import config, device
+
+statusOn = False
+
+ser = serial.Serial(
+    port='/dev/ttyUSB0',
+    baudrate=9600,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS
+)
+
+if ser.isOpen() : 
+    ser.close()
+ser.open()
+
+ser.write('\r*pow=?#\r')
+status = ''
+time.sleep(1)
+while ser.inWaiting() > 0:
+    status += ser.read(1)
+
+if 'ON' in status:
+    statusOn = True
+
+config.restart_on_update()
+
+tz = pytz.timezone(config.timezone)
+
+device.screen(on = True)
+while time.time() < 10000000:
+    print >>sys.stderr, "waiting for correct system time"
+    time.sleep(1)
+
+time.sleep(15)
+
+while 1:
+    now = pytz.utc.localize(datetime.utcnow(), is_dst=None).astimezone(tz)
+    print >>sys.stderr, now
+
+    dow = now.weekday()
+    hour = now.hour
+    hour = dow * 24 + hour
+    print >>sys.stderr, "Hour: %d" % hour
+    
+    try:
+        on = config.times[hour]
+    except IndexError:
+        on = True
+    print >>sys.stderr, "Screen on: %r" % on
+
+    if on:
+        if not statusOn:
+             if ser.isOpen() : 
+                 ser.close()
+                 ser.open()
+
+                 ser.write('\r*pow=on#\r')
+                 status = ''
+                 time.sleep(1)
+                 while ser.inWaiting() > 0:
+                     status += ser.read(1)
+
+                 if 'ON' in status:
+                     statusOn = True
+                 else:
+                     statusOn = False
+    else:
+        if statusOn:
+             if ser.isOpen() : 
+                 ser.close()
+                 ser.open()
+
+                 ser.write('\r*pow=off#\r')
+                 status = ''
+                 time.sleep(1)
+                 while ser.inWaiting() > 0:
+                     status += ser.read(1)
+
+                 if 'OFF' in status:
+                     statusOn = False
+                 else:
+                     statusOn = True
+    #device.screen(on = on)
+
+    time.sleep(60)

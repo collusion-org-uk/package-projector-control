@@ -1,0 +1,15 @@
+{
+    "name": "Projector Control",
+    "author": "Rich Hall <rich@collusion.org.uk>",
+    "desc": "Uses RS232 to control projectors using info-beamer",
+    "repository": "https://github.com/richhall/package-projector-control",
+    "platforms": ["pi/epoch-1", "pi/epoch-2"],
+    "offline": {
+        "support": "no",
+        "info": "Requires correct system time to decide when to turn on/off projectors"
+    },
+    "nesting": {
+        "parents": "any",
+        "childs": []
+    }
+}
