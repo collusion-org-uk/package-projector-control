@@ -87,6 +87,6 @@ while 1:
                      statusOn = False
                  else:
                      statusOn = True
-    #device.screen(on = on)
+    device.screen(on = on)
 
     time.sleep(60)
