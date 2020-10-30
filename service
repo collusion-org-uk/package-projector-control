@@ -99,15 +99,15 @@ while 1:
                 ser1.open()
 
                 ser1.write('\r*pow=on#\r')
-                 status1 = ''
-                 time.sleep(1)
-                 while ser1.inWaiting() > 0:
-                     status1 += ser1.read(1)
+                status1 = ''
+                time.sleep(1)
+                while ser1.inWaiting() > 0:
+                    status1 += ser1.read(1)
 
-                 if 'ON' in status1:
-                     status1On = True
-                 else:
-                     status1On = False
+                if 'ON' in status1:
+                    status1On = True
+                else:
+                    status1On = False
     else:
         if status0On:
              if ser0.isOpen() : 
