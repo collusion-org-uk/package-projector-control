@@ -9,7 +9,7 @@
         ".gitignore"
     ],
 	"permissions": {
-		"run-as-root": "request serial access"
+		"run-as-root": "request serial access",
 		"serial": "request serial access"
 	},
     "options": [{
