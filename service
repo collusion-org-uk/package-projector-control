@@ -10,7 +10,7 @@ status0On = False
 status1On = False
 
 ser0 = serial.Serial(
-    port='/dev/ttyUSB1',
+    port='/dev/ttyUSB0',
     baudrate=9600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -18,7 +18,7 @@ ser0 = serial.Serial(
 )
 
 ser1 = serial.Serial(
-    port='/dev/ttyUSB2',
+    port='/dev/ttyUSB1',
     baudrate=9600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
