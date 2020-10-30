@@ -93,7 +93,7 @@ while 1:
                      status0On = True
                  else:
                      status0On = False
-       if not status1On:
+        if not status1On:
             if ser1.isOpen() : 
                 ser1.close()
                 ser1.open()
