@@ -6,9 +6,10 @@ import serial
 from datetime import datetime
 from hosted import config, device
 
-statusOn = False
+status0On = False
+status1On = False
 
-ser = serial.Serial(
+ser0 = serial.Serial(
     port='/dev/ttyUSB0',
     baudrate=9600,
     parity=serial.PARITY_NONE,
@@ -16,18 +17,39 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS
 )
 
-if ser.isOpen() : 
-    ser.close()
-ser.open()
+ser1 = serial.Serial(
+    port='/dev/ttyUSB1',
+    baudrate=9600,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS
+)
 
-ser.write('\r*pow=?#\r')
-status = ''
+if ser0.isOpen() : 
+    ser0.close()
+ser0.open()
+
+if ser1.isOpen() : 
+    ser1.close()
+ser1.open()
+
+ser0.write('\r*pow=?#\r')
+status0 = ''
 time.sleep(1)
-while ser.inWaiting() > 0:
-    status += ser.read(1)
+while ser0.inWaiting() > 0:
+    status0 += ser.read(1)
 
-if 'ON' in status:
-    statusOn = True
+if 'ON' in status0:
+    status0On = True
+    
+ser1.write('\r*pow=?#\r')
+status1 = ''
+time.sleep(1)
+while ser1.inWaiting() > 0:
+    status1 += ser.read(1)
+
+if 'ON' in status1:
+    status1On = True
 
 config.restart_on_update()
 
@@ -56,37 +78,67 @@ while 1:
     print >>sys.stderr, "Screen on: %r" % on
 
     if on:
-        if not statusOn:
-             if ser.isOpen() : 
-                 ser.close()
-                 ser.open()
+        if not status0On:
+             if ser0.isOpen() : 
+                 ser0.close()
+                 ser0.open()
 
-                 ser.write('\r*pow=on#\r')
-                 status = ''
+                 ser0.write('\r*pow=on#\r')
+                 status0 = ''
                  time.sleep(1)
-                 while ser.inWaiting() > 0:
-                     status += ser.read(1)
+                 while ser0.inWaiting() > 0:
+                     status0 += ser0.read(1)
 
-                 if 'ON' in status:
-                     statusOn = True
+                 if 'ON' in status0:
+                     status0On = True
                  else:
-                     statusOn = False
+                     status0On = False
+        if not status1On:
+             if ser1.isOpen() : 
+                 ser1.close()
+                 ser1.open()
+
+                 ser1.write('\r*pow=on#\r')
+                 status1 = ''
+                 time.sleep(1)
+                 while ser1.inWaiting() > 0:
+                     status1 += ser1.read(1)
+
+                 if 'ON' in status1:
+                     status1On = True
+                 else:
+                     status1On = False
     else:
-        if statusOn:
-             if ser.isOpen() : 
-                 ser.close()
-                 ser.open()
+        if status0On:
+             if ser0.isOpen() : 
+                 ser0.close()
+                 ser0.open()
 
-                 ser.write('\r*pow=off#\r')
-                 status = ''
+                 ser0.write('\r*pow=off#\r')
+                 status0 = ''
                  time.sleep(1)
-                 while ser.inWaiting() > 0:
-                     status += ser.read(1)
+                 while ser0.inWaiting() > 0:
+                     status0 += ser0.read(1)
 
-                 if 'OFF' in status:
-                     statusOn = False
+                 if 'OFF' in status0:
+                     status0On = False
                  else:
-                     statusOn = True
+                     status0On = True
+        if status1On:
+             if ser1.isOpen() : 
+                 ser1.close()
+                 ser1.open()
+
+                 ser1.write('\r*pow=off#\r')
+                 status1 = ''
+                 time.sleep(1)
+                 while ser1.inWaiting() > 0:
+                     status1 += ser1.read(1)
+
+                 if 'OFF' in status1:
+                     status1On = False
+                 else:
+                     status1On = True
     device.screen(on = on)
 
     time.sleep(60)
